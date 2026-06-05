@@ -3,99 +3,509 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Line Follower Robot</title>
+    <title>Team 2 — Line Follower Robot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #f5f2eb;
+            --ink: #1a1714;
+            --muted: #7a7168;
+            --accent: #c8401a;
+            --accent-light: #f0e8df;
+            --card-bg: #fff;
+            --border: #e2ddd6;
+            --mono: 'DM Mono', monospace;
+            --serif: 'Fraunces', Georgia, serif;
+            --sans: 'Instrument Sans', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--ink);
+            font-family: var(--sans);
             line-height: 1.6;
-            background-color: #f8f9fa;
-            color: #333;
-            margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            box-sizing: border-box;
         }
 
-        .container {
-            text-align: center;
-            max-width: 900px;
-            width: 100%;
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        .hero {
+            position: relative;
+            padding: 80px 40px 60px;
+            max-width: 960px;
+            margin: 0 auto;
+            overflow: hidden;
         }
 
-        h1 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            color: #111;
-            font-size: 2.5rem;
+        .hero::before {
+            content: '02';
+            position: absolute;
+            right: -10px;
+            top: 20px;
+            font-family: var(--serif);
+            font-size: 240px;
+            font-weight: 700;
+            color: var(--accent-light);
+            line-height: 1;
+            pointer-events: none;
+            user-select: none;
         }
 
-        .description {
-            color: #666;
-            margin-bottom: 35px;
-            font-size: 1.1rem;
+        .eyebrow {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 18px;
         }
 
-        .media-grid {
+        .hero h1 {
+            font-family: var(--serif);
+            font-size: clamp(2.4rem, 6vw, 4.2rem);
+            font-weight: 300;
+            line-height: 1.1;
+            color: var(--ink);
+            max-width: 620px;
+            position: relative;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .team-strip {
             display: flex;
-            flex-direction: column;
-            gap: 25px;
-            width: 100%;
+            gap: 8px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+            position: relative;
         }
 
-        @media (min-width: 768px) {
-            .media-grid {
-                flex-direction: row;
-            }
-            .media-card {
-                flex: 1;
-            }
+        .team-pill {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            background: var(--ink);
+            color: var(--bg);
+            padding: 5px 14px;
+            border-radius: 100px;
+            letter-spacing: 0.04em;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 0;
+        }
+
+        .page {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 40px 100px;
+        }
+
+        .section {
+            padding-top: 64px;
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .section-num {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+        }
+
+        .section-title {
+            font-family: var(--serif);
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--ink);
+        }
+
+        .section-title span {
+            font-style: normal;
+            font-weight: 700;
+        }
+
+        .body-text {
+            font-size: 1rem;
+            color: var(--muted);
+            max-width: 640px;
+            line-height: 1.75;
+            margin-bottom: 28px;
         }
 
         .media-card {
-            background-color: #000;
-            border-radius: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow: 0 2px 8px rgba(26,23,20,0.06);
         }
 
-        .media-card img, 
+        .media-card img,
         .media-card video {
             width: 100%;
             height: auto;
             display: block;
-            object-fit: cover;
+        }
+
+        .media-caption {
+            padding: 14px 20px;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
+            letter-spacing: 0.04em;
+        }
+
+        .video-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .video-pair { grid-template-columns: 1fr; }
+            .hero { padding: 60px 24px 40px; }
+            .page { padding: 0 24px 80px; }
+            .hero::before { font-size: 140px; right: -5px; }
+        }
+
+        .pid-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .pid-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 22px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pid-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px; height: 100%;
+            background: var(--accent);
+        }
+
+        .pid-label {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.14em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .pid-val {
+            font-family: var(--serif);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .pid-desc {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .track-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            margin-bottom: 28px;
+        }
+
+        .track-table th {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 10px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .track-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--ink);
+        }
+
+        .track-table tr:last-child td { border-bottom: none; }
+        .track-table tr:hover td { background: var(--accent-light); }
+
+        .badge {
+            display: inline-block;
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            padding: 3px 10px;
+            border-radius: 100px;
+            background: var(--accent-light);
+            color: var(--accent);
+            letter-spacing: 0.06em;
+        }
+
+        /* ── FOOTER ───────────────────────────── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 28px 40px;
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: gap;
+            gap: 12px;
+        }
+
+        footer span {
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--muted);
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Line Follower Robot (Team 2)</h1>
-        <p class="description">A demonstration of the autonomous robot navigating a path using photo-resistors. By Ishan, Zihao, Sander, and Nafi.</p>
-        
-        <div class="media-grid">
-            <div class="media-card">
-                <img src="follower_robot.jpg" alt="Line Follower Robot Photo">
-            </div>
+<div class="hero">
+    <p class="eyebrow">ECE 5 Line Follower Project · Team 2</p>
+    <h1>Line Follower<br><em>Robot</em></h1>
+    <div class="team-strip">
+        <span class="team-pill">Ishan</span>
+        <span class="team-pill">Zihao</span>
+        <span class="team-pill">Sander</span>
+        <span class="team-pill">Nafi</span>
+    </div>
+</div>
 
+<hr class="divider">
+
+<div class="page">
+
+    <div class="section" id="s1">
+        <div class="section-label">
+            <span class="section-num">01 —</span>
+            <h2 class="section-title">Initial <span>Design</span></h2>
+        </div>
+        <p class="body-text">
+            Below is a photograph of our initial robot design.
+            The robot uses photo-resistors to detect the line and navigate autonomously.
+            However, since we were in a very early stage of design, there were many problems
+            with the robot that we worked on improving throughout the class in preparation
+            for the final competition.
+        </p>
+        <div class="media-card">
+            <img src="follower_robot.jpg" alt="Line Follower Robot Photo">
+            <div class="media-caption">fig. 1 — Initial breadboard prototype</div>
+        </div>
+    </div>
+
+    <div class="section" id="s2">
+        <div class="section-label">
+            <span class="section-num">02 —</span>
+            <h2 class="section-title">First Working <span>Demonstration</span></h2>
+        </div>
+        <p class="body-text">
+            A demonstration of the autonomous robot navigating a path using photo-resistors.
+             This was our robot before we transitioned from breadboards to fully soldered components. 
+             As you can see, although the robot managed to follow the line quite well, it was still 
+             very unstable and went off course a few times. Therefore, we worked on designing a new chassis
+             as well as light-shields for the photo-resistors. We also transitioned to soldered components
+             to improve the reliability of signal propagation.
+        </p>
+        <div class="media-card">
+            <video controls playsinline preload="metadata">
+                <source src="robot_following_line.mov" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="media-caption">fig. 2 — Breadboard-stage navigation test</div>
+        </div>
+    </div>
+
+    <div class="section" id="s3">
+        <div class="section-label">
+            <span class="section-num">03 —</span>
+            <h2 class="section-title">PID Control Final <span>Improvements</span></h2>
+        </div>
+        <p class="body-text">
+            Our final robot integrates a PID controller with three major components. The <strong>proportional gain</strong> weights the current error, which is 
+            essentially responsible for computing the difference between the middle photo-resistor (over black) and its neighbours 
+            multiplied by a tunable constant. The <strong>derivative gain</strong> tracks the rate of change in error, reducing jitter that a pure proportional controller would exhibit.
+            It does this by finding the rate change in error and multiplying it by a tunable parameter called the derivative gain. The derivative
+            gain is especially useful for increasing the stabillity of our robot. The integral component accumulates steady-state error over time and multiplies that by the tunable 
+            <strong>integral gain</strong>. that P and D alone cannot eliminate.
+        </p>
+        <div class="media-card" style="margin-bottom: 32px;">
+            <img src="annotations_robot.png" alt="Annotated final robot">
+            <div class="media-caption">fig. 3 — Annotated final robot with soldered components</div>
+        </div>
+
+        <div class="pid-grid">
+            <div class="pid-card">
+                <div class="pid-label">Proportional (Kp)</div>
+                <div class="pid-val">65</div>
+                <div class="pid-desc">Weights current error directly. We found this to be the best balance for the proportional gain.</div>
+            </div>
+            <div class="pid-card">
+                <div class="pid-label">Integral (Ki)</div>
+                <div class="pid-val">0</div>
+                <div class="pid-desc">No asymmetry detected in robot. Since out robot had no steady state error, we did not include an integral gain.</div>
+            </div>
+            <div class="pid-card">
+                <div class="pid-label">Derivative (Kd)</div>
+                <div class="pid-val">0.04</div>
+                <div class="pid-desc">To reduce over-shooting and increase stabillity we had a small derivative gain.</div>
+            </div>
+            <div class="pid-card">
+                <div class="pid-label">Speed Range</div>
+                <div class="pid-val">120–255</div>
+                <div class="pid-desc">Adjusted heavily per track type to optimise the robot's performance</div>
+            </div>
+        </div>
+
+        <!-- Per-track tuning -->
+        <table class="track-table">
+            <thead>
+                <tr>
+                    <th>Track</th>
+                    <th>Key Adjustment</th>
+                    <th>Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Drag Race</td>
+                    <td><span class="badge">↑ Speed &amp; Kp</span></td>
+                    <td>This was to increase the speed of the robot on the straights and also improve its reaction time</td>
+                </tr>
+                <tr>
+                    <td>Frequency Sweep</td>
+                    <td><span class="badge">↓ Speed · ↑ Kd</span></td>
+                    <td>We reduced the speed heavily to make our robot much more stable and increased the derivative gain to make it jitter less.</td>
+                </tr>
+                <tr>
+                    <td>Loop Track</td>
+                    <td><span class="badge">↑ Speed</span></td>
+                    <td>In order to maximise the number of laps completed we increased the speed for this track.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section" id="s4">
+        <div class="section-label">
+            <span class="section-num">04 —</span>
+            <h2 class="section-title">Robot <span>Poster</span></h2>
+        </div>
+        <div class="media-card">
+            <img src="poster.png" alt="Team 2 Robot Poster">
+            <div class="media-caption">fig. 4 — Competition poster</div>
+        </div>
+    </div>
+
+    <div class="section" id="s5">
+        <div class="section-label">
+            <span class="section-num">05 —</span>
+            <h2 class="section-title">Competition <span>Results</span></h2>
+        </div>
+        <p class="body-text">Competition track footage below. In terms of the competition results, we placed
+        <strong>first</strong> on the drag-race track, <strong>second</strong> on the frequency sweep track and 
+        <strong>ninth</strong> on the loop track. Some of our recorded videos are shown below.
+        </p>
+        <div class="video-pair">
             <div class="media-card">
                 <video controls playsinline preload="metadata">
-                    <source src="robot_following_line.mov" type="video/mp4">
+                    <source src="track1.mov" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
+                <div class="media-caption">Track 1</div>
+            </div>
+            <div class="media-card">
+                <video controls playsinline preload="metadata">
+                    <source src="track2.mov" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="media-caption">Track 2</div>
             </div>
         </div>
     </div>
+
+    <div class="section" id="s6">
+        <div class="section-label">
+            <span class="section-num">06 —</span>
+            <h2 class="section-title">Team Photo &amp; <span>Reflection</span></h2>
+        </div>
+        <p class="body-text">
+            In terms of improvements, one major thing we could have done was optimise the code further. 
+            For example, when turning, we could have programmed the wheels to move in opposite directions to 
+            allow the robot to make even sharper turns. This was something that other teams in different sections 
+            did to improve their performance. Another thing we could have done is 3D-printed a wider chassis, as not
+            only would this make the robot more stable, but it would also help with load-balancing. This is because right
+            now our robot has a lot of weight in the back due to the heavy batteries, and with a wider chassis, we could
+            have distributed it more evenly. Another thing we messed up on was our photo-resistor alignment. The region
+            in which we put the photo-resistors was quite cramped making it difficult to adjust them during compeition. 
+        </p>
+        <div class="media-card">
+            <img src="team_photo.jpeg" alt="Team 2 Photo">
+            <div class="media-caption">fig. 5 — Team 2</div>
+        </div>
+    </div>
+
+</div><!-- /page -->
+
+<hr class="divider">
+<footer>
+    <span>Team 2 · Line Follower Robot</span>
+    <span>Ishan · Zihao · Sander · Nafi</span>
+</footer>
+
+<script>
+    // Scroll-triggered fade-in
+    const sections = document.querySelectorAll('.section');
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    sections.forEach((s, i) => {
+        s.style.transitionDelay = `${i * 0.04}s`;
+        io.observe(s);
+    });
+</script>
 
 </body>
 </html>
